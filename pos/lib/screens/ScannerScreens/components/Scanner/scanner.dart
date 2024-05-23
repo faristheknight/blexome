@@ -49,7 +49,7 @@ class _ScannerState extends State<Scanner> {
 
         final TextStyle labelStyle = Theme.of(context)
             .textTheme
-            .headline6!
+            .headlineLarge!
             .copyWith(color: Colors.white);
 
         return Padding(

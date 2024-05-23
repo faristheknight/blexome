@@ -360,4 +360,8 @@ class Labels {
   static String incorrectPhoneNumber() {
     return "Incorrect Phone Number";
   }
+
+  static String passwordsDoNotMatch() {
+    return "Passwords do not Match";
+  }
 }

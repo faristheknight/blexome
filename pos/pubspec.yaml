@@ -30,13 +30,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^1.2.1
+  url_launcher: ^6.2.6
   permission_handler: ^11.3.1
   flutter_inappwebview: ^6.0.0
   youtube_player_flutter: ^9.0.1
-  simple_barcode_scanner: ^0.0.8
+  simple_barcode_scanner: ^0.1.1
   flutter_barcode_scanner: ^2.0.0
   mobile_scanner: ^5.0.1
-  camera: ^0.10.5+9
+  camera: ^0.11.0
   flutter_svg: ^2.0.10+1
 
   flutter_web_plugins:
@@ -57,7 +59,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

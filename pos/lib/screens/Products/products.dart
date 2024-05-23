@@ -123,9 +123,8 @@ class _ProductsState extends State<Products> {
       builder: (BuildContext context) {
         return Theme(
             data: ThemeData(
-              textTheme: const TextTheme(
-                subtitle1: TextStyle(color: Colors.black),
-              ),
+              textTheme:
+                  const TextTheme(bodySmall: TextStyle(color: Colors.black)),
               inputDecorationTheme: const InputDecorationTheme(
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
@@ -237,9 +236,8 @@ class _ProductsState extends State<Products> {
       builder: (BuildContext context) {
         return Theme(
             data: ThemeData(
-              textTheme: const TextTheme(
-                subtitle1: TextStyle(color: Colors.black),
-              ),
+              textTheme:
+                  const TextTheme(bodySmall: TextStyle(color: Colors.black)),
               inputDecorationTheme: const InputDecorationTheme(
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
