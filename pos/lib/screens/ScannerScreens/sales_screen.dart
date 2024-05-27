@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pos/labels.dart';
+import 'package:pos/CommonWidgets/button.dart';
 import 'package:pos/CommonWidgets/heading.dart';
 import 'package:pos/constants.dart';
+import 'package:pos/labels.dart';
 // import 'package:pos/CommonWidgets/profit_and_sales_widget.dart';
 import 'package:pos/screens/ScannerScreens/components/Scanner/scanner.dart';
 import 'package:pos/screens/ScannerScreens/components/ScannerWidgets/scanner_textfields_widget.dart';
-import 'package:pos/CommonWidgets/button.dart';
 
 class SalesScreen extends StatefulWidget {
   const SalesScreen({super.key});
@@ -50,9 +50,10 @@ class _SalesScreenState extends State<SalesScreen> {
                 ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.5,
-                  width: MediaQuery.of(context).size.width * 1,
-                  child: Scanner(),
+                  width: MediaQuery.of(context).size.width,
+                  child: const Scanner(),
                 ),
+
                 const SizedBox(
                   height: 20,
                 ),

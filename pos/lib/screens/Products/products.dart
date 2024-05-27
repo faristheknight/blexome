@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos/constants.dart';
 import 'package:pos/labels.dart';
-import 'package:pos/Screens/Products/scanner_textfields_widget.dart';
 
 class Products extends StatefulWidget {
   const Products({super.key});
