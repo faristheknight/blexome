@@ -78,7 +78,7 @@ class _ShopsState extends State<Shops> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const PermissionHEHE(title: "LOL"),
+                      builder: (context) => const ShopManagementScreen(),
                     ),
                   );
 
