@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:pos/CommonWidgets/button.dart';
 import 'package:pos/Screens/OtherPages/new_shop_form.dart';
 // import 'package:pos/Screens/OtherPages/shop_management_screen.dart';
 import 'package:pos/constants.dart';
 import 'package:pos/labels.dart';
-import 'package:pos/CommonWidgets/button.dart';
 import 'package:pos/screens/LoginSignupScreens/SignUp/page_view.dart';
 import 'package:pos/screens/LoginSignupScreens/login.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pos/screens/OtherPages/shop_management_screen.dart';
-import 'package:pos/screens/PermissionHandler/permission_hehe.dart';
 
 class Shops extends StatefulWidget {
   const Shops({super.key});

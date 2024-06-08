@@ -7,16 +7,12 @@ import 'package:pos/screens/selectLanguagesScreen/components/language_button.dar
 import 'package:pos/labels.dart';
 
 class SignUpFirstPage extends StatelessWidget {
-  final TextEditingController firstnameController;
-  final TextEditingController surnameController;
-  final TextEditingController cnicController;
+  final TextEditingController nameController;
   final TextEditingController phonenumberController;
   final void Function() onNext;
 
   SignUpFirstPage({
-    required this.firstnameController,
-    required this.surnameController,
-    required this.cnicController,
+    required this.nameController,
     required this.phonenumberController,
     required this.onNext,
   });
@@ -74,54 +70,13 @@ class SignUpFirstPage extends StatelessWidget {
                       textColor: kTextColor,
                     ),
                   ),
+                 
                   LoginTextFieldsWidget(
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 2.0, horizontal: 12.0),
                     textInputType: TextInputType.text,
                     text: '',
                     hintText: Labels.name(),
-                    onChanged: null,
-                    filledColor: Colors.white,
-                    borderColor: kBorderColor1,
-                    textColor: kTextColor,
-                    width: MediaQuery.of(context).size.width * .5,
-                    height: 40,
-                    borderWidth: 1,
-                    borderRadius: BorderRadius.circular(30),
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                    iconColor: Colors.black,
-                    obscureText: false,
-                    maxlines: 1,
-                    controller: firstnameController,
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 2.0, horizontal: 12.0),
-                  ),
-                  LoginTextFieldsWidget(
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 2.0, horizontal: 12.0),
-                    textInputType: TextInputType.text,
-                    text: '',
-                    hintText: Labels.surname(),
-                    onChanged: null,
-                    filledColor: Colors.white,
-                    borderColor: kBorderColor1,
-                    textColor: kTextColor,
-                    width: MediaQuery.of(context).size.width * .6,
-                    height: 40,
-                    borderWidth: 1,
-                    borderRadius: BorderRadius.circular(30),
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                    iconColor: Colors.black,
-                    obscureText: false,
-                    maxlines: 1,
-                    controller: surnameController,
-                  ),
-                  LoginTextFieldsWidget(
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 2.0, horizontal: 12.0),
-                    textInputType: const TextInputType.numberWithOptions(),
-                    text: '',
-                    hintText: Labels.cnic(),
                     onChanged: null,
                     filledColor: Colors.white,
                     borderColor: kBorderColor1,
@@ -135,8 +90,9 @@ class SignUpFirstPage extends StatelessWidget {
                     iconColor: Colors.black,
                     obscureText: false,
                     maxlines: 1,
-                    controller: cnicController,
+                    controller: nameController,
                   ),
+                 
                   LoginTextFieldsWidget(
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 2.0, horizontal: 12.0),
@@ -164,27 +120,12 @@ class SignUpFirstPage extends StatelessWidget {
                     child: LanguageButton(
                       text: Labels.next(),
                       onTap: () {
-                        if (firstnameController.text.isEmpty) {
+                        if (nameController.text.isEmpty) {
                           // Show an error message
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(Labels.nameIsRequired())),
                           );
-                        } else if (surnameController.text.isEmpty) {
-                          // Show an error message
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(Labels.surnameIsRequired())),
-                          );
-                        } else if (cnicController.text.length < 13) {
-                          // Show an error message
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(Labels.incorrectCNIC())),
-                          );
-                        } else if (cnicController.text.isEmpty) {
-                          // Show an error message
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(Labels.cnicIsRequired())),
-                          );
-                        } else if (phonenumberController.text.isEmpty) {
+                        }  else if (phonenumberController.text.isEmpty) {
                           // Show an error message
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

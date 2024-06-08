@@ -1,87 +1,60 @@
-import 'dart:math';
-import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:pos/screens/ScannerScreens/components/ScannerWidgets/scanned_barcode_label.dart';
-import 'package:pos/screens/ScannerScreens/components/ScannerWidgets/scanner_button_widgets.dart';
-import 'package:pos/screens/ScannerScreens/components/ScannerWidgets/scanner_error_widget.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../ScannerWidgets/scanner_button_widgets.dart';
 
 class Scanner extends StatefulWidget {
-  const Scanner({super.key});
+  const Scanner({super.key}) ;
 
   @override
   State<Scanner> createState() => _ScannerState();
 }
 
-class _ScannerState extends State<Scanner> {
+class _ScannerState extends State<Scanner> with WidgetsBindingObserver {
   final MobileScannerController controller = MobileScannerController(
     torchEnabled: false,
-    returnImage: true,
+    formats: [BarcodeFormat.all], // Adjust formats as needed
   );
+  StreamSubscription<BarcodeCapture>? _subscription;
   double _zoomFactor = 0.0;
 
   @override
   void initState() {
     super.initState();
     _initializeScanner();
+    WidgetsBinding.instance.addObserver(this);
+    _subscription = controller.barcodes.listen(_handleBarcode);
   }
 
   Future<void> _initializeScanner() async {
-    // Request camera permission
     final status = await Permission.camera.request();
     if (status.isGranted) {
-      // If permission is granted, start the scanner
-      controller.start();
+      await controller.start();
+      if (kDebugMode) {
+        print('Camera started successfully');
+      }
     } else {
-      // If permission is denied, handle accordingly (show a message, etc.)
-      print('Camera permission denied');
+      if (kDebugMode) {
+        print('Camera permission denied');
+      }
     }
   }
 
-  Widget _buildZoomScaleSlider() {
-    return ValueListenableBuilder(
-      valueListenable: controller,
-      builder: (context, state, child) {
-        if (!state.isInitialized || !state.isRunning) {
-          return const SizedBox.shrink();
+  void _handleBarcode(BarcodeCapture barcodeCapture) {
+    if (barcodeCapture.barcodes.isNotEmpty) {
+      final barcode = barcodeCapture.barcodes.first;
+      final String? code = barcode.rawValue;
+      if (code != null) {
+        if (kDebugMode) {
+          print('Barcode found! $code');
         }
-
-        final TextStyle labelStyle = Theme.of(context)
-            .textTheme
-            .headlineLarge!
-            .copyWith(color: Colors.white);
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Row(
-            children: [
-              Text(
-                '0%',
-                overflow: TextOverflow.fade,
-                style: labelStyle,
-              ),
-              Expanded(
-                child: Slider(
-                  value: _zoomFactor,
-                  onChanged: (value) {
-                    setState(() {
-                      _zoomFactor = value;
-                      controller.setZoomScale(value);
-                    });
-                  },
-                ),
-              ),
-              Text(
-                '100%',
-                overflow: TextOverflow.fade,
-                style: labelStyle,
-              ),
-            ],
-          ),
-        );
-      },
-    );
+        // Add your code handling logic here
+      }
+    }
   }
 
   @override
@@ -89,96 +62,39 @@ class _ScannerState extends State<Scanner> {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: MediaQuery.of(context).size.height / 2,
-            child: MobileScanner(
-              controller: controller,
-              errorBuilder: (context, error, child) {
-                return ScannerErrorWidget(error: error);
-              },
-              fit: BoxFit.cover,
-            ),
+          MobileScanner(
+            controller: controller,
+            errorBuilder: (context, error, child) {
+              if (kDebugMode) {
+                print('Error: $error');
+              }
+              return Center(
+                child: Text(
+                  'Camera error: $error',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              );
+            },
+            fit: BoxFit.cover,
           ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: MediaQuery.of(context).size.height / 2,
-            child: ColoredBox(
-              color: Colors.transparent,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (!kIsWeb) _buildZoomScaleSlider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ToggleFlashlightButton(controller: controller),
-                      StartStopMobileScannerButton(controller: controller),
-                      Expanded(
-                        child: Center(
-                          child: ScannedBarcodeLabel(
-                            barcodes: controller.barcodes,
-                          ),
-                        ),
-                      ),
-                      AnalyzeImageFromGalleryButton(controller: controller),
-                      SwitchCameraButton(controller: controller),
-                    ],
-                  ),
-                ],
-              ),
+          if (!kIsWeb)
+            Positioned(
+              top: MediaQuery.of(context).size.height * 0.5 - 20,
+              left: 0,
+              right: 0,
+              child: _buildZoomScaleSlider(),
             ),
-          ),
           Positioned(
-            bottom: 40, // Adjust as needed
-            right: 120, // Adjust as needed
-            child: StreamBuilder<BarcodeCapture>(
-              stream: controller.barcodes,
-              builder: (context, snapshot) {
-                final barcode = snapshot.data;
-
-                if (barcode == null) {
-                  return const Text(
-                    'Your scanned barcode will appear here!',
-                  );
-                }
-
-                final barcodeImage = barcode.image;
-
-                if (barcodeImage == null) {
-                  return const Text('No image for this barcode.');
-                }
-
-                return Transform.scale(
-                  scale: 0.2, // Adjust the scale as needed
-                  child: Image.memory(
-                    barcodeImage,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Text('Could not decode image bytes. $error');
-                    },
-                    frameBuilder: (
-                      BuildContext context,
-                      Widget child,
-                      int? frame,
-                      bool? wasSynchronouslyLoaded,
-                    ) {
-                      if (wasSynchronouslyLoaded == true || frame != null) {
-                        return Transform.rotate(
-                          angle: 90 * pi / 180,
-                          child: child,
-                        );
-                      }
-
-                      return const CircularProgressIndicator();
-                    },
-                  ),
-                );
-              },
+            top: 40,
+            left: 20,
+            right: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ToggleFlashlightButton(controller: controller),
+                StartStopMobileScannerButton(controller: controller),
+                SwitchCameraButton(controller: controller),
+              ],
             ),
           ),
         ],
@@ -186,9 +102,63 @@ class _ScannerState extends State<Scanner> {
     );
   }
 
+  Widget _buildZoomScaleSlider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: [
+          const Text(
+            '0%',
+            overflow: TextOverflow.fade,
+            style: TextStyle(color: Colors.white),
+          ),
+          Expanded(
+            child: Slider(
+              value: _zoomFactor,
+              onChanged: (value) {
+                setState(() {
+                  _zoomFactor = value;
+                  controller.setZoomScale(value);
+                });
+              },
+            ),
+          ),
+         const Text(
+            '100%',
+            overflow: TextOverflow.fade,
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
-  Future<void> dispose() async {
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (!controller.value.isInitialized) {
+      return;
+    }
+    switch (state) {
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.paused:
+        controller.stop();
+        break;
+      case AppLifecycleState.resumed:
+        controller.start();
+        break;
+      case AppLifecycleState.inactive:
+        controller.stop();
+        break;
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _subscription?.cancel();
+    controller.dispose();
     super.dispose();
-    await controller.dispose();
   }
 }

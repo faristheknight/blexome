@@ -10,9 +10,7 @@ class MultiStepForm extends StatefulWidget {
 
 class _MultiStepFormState extends State<MultiStepForm> {
   final PageController _pageController = PageController();
-  final TextEditingController _firstnameController = TextEditingController();
-  final TextEditingController _surnameController = TextEditingController();
-  final TextEditingController _cnicController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phonenumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -35,9 +33,7 @@ class _MultiStepFormState extends State<MultiStepForm> {
   }
 
   void _printValues() {
-    print('First Name: ${_firstnameController.text}');
-    print('Sir Name: ${_surnameController.text}');
-    print('CNIC: ${_cnicController.text}');
+    print('First Name: ${_nameController.text}');
     print('Phone Number: ${_phonenumberController.text}');
     print('Email: ${_emailController.text}');
     print('Password: ${_passwordController.text}');
@@ -48,9 +44,7 @@ class _MultiStepFormState extends State<MultiStepForm> {
   @override
   void dispose() {
     _pageController.dispose();
-    _firstnameController.dispose();
-    _surnameController.dispose();
-    _cnicController.dispose();
+    _nameController.dispose();
     _phonenumberController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -66,9 +60,7 @@ class _MultiStepFormState extends State<MultiStepForm> {
         physics: const NeverScrollableScrollPhysics(), // Disable swipe
         children: [
           SignUpFirstPage(
-              firstnameController: _firstnameController,
-              surnameController: _surnameController,
-              cnicController: _cnicController,
+              nameController: _nameController,
               phonenumberController: _phonenumberController,
               onNext: _nextPage),
           SignUpSecondPage(
