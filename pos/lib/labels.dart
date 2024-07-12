@@ -9,6 +9,10 @@ class Labels {
     return "Languages";
   }
 
+  static String add() {
+    return "Add";
+  }
+
   static String english() {
     return "English";
   }

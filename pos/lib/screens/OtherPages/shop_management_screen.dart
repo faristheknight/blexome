@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+// import 'package:pos/screens/shop_sales.dart';
+import 'package:pos/CommonWidgets/button.dart';
+import 'package:pos/Screens/OtherPages/product_management_screen.dart';
+import 'package:pos/Screens/OtherPages/shop_reports.dart';
 import 'package:pos/constants.dart';
 import 'package:pos/labels.dart';
 import 'package:pos/screens/ScannerScreens/purchase_screen.dart';
 import 'package:pos/screens/ScannerScreens/return_screen.dart';
 import 'package:pos/screens/ScannerScreens/sales_screen.dart';
-import 'package:pos/Screens/OtherPages/product_management_screen.dart';
-import 'package:pos/Screens/OtherPages/shop_reports.dart';
-// import 'package:pos/screens/shop_sales.dart';
-import 'package:pos/CommonWidgets/button.dart';
 
 class ShopManagementScreen extends StatefulWidget {
   const ShopManagementScreen({super.key});
@@ -108,7 +108,7 @@ class _ShopManagementScreenState extends State<ShopManagementScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RetrunScreen(),
+                            builder: (context) => const ReturnScreen(),
                           ),
                         );
                       },

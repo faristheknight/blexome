@@ -1,168 +1,238 @@
-import 'package:flutter/material.dart';
-import 'package:pos/labels.dart';
-import 'package:pos/CommonWidgets/heading.dart';
-import 'package:pos/constants.dart';
-// import 'package:pos/CommonWidgets/profit_and_sales_widget.dart';
-import 'package:pos/screens/ScannerScreens/components/Scanner/scanner.dart';
-import 'package:pos/screens/ScannerScreens/components/ScannerWidgets/scanner_textfields_widget.dart';
-import 'package:pos/CommonWidgets/button.dart';
+import 'dart:convert';
 
-class RetrunScreen extends StatefulWidget {
-  const RetrunScreen({super.key});
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class ReturnScreen extends StatefulWidget {
+  const ReturnScreen({super.key});
 
   @override
-  _RetrunScreenState createState() => _RetrunScreenState();
+  _ReturnScreenState createState() => _ReturnScreenState();
 }
 
-class _RetrunScreenState extends State<RetrunScreen> {
-  // String variables to store text field values
-  String name = '';
-  String quantity = '';
-  String cost = '';
-  String sellingPrice = '';
+class _ReturnScreenState extends State<ReturnScreen> {
+  List<Map<String, dynamic>> rows = [
+    {
+      'name': 'Item 1',
+      'productId': '1',
+      'quantity': '10',
+      'sellingPrice': '40.00', // Changed selling price to 40.00
+      'originalQuantity': '10',
+    },
+    {
+      'name': 'Item 2',
+      'productId': '2',
+      'quantity': '15',
+      'sellingPrice': '40.00', // Changed selling price to 40.00
+      'originalQuantity': '15',
+    },
+  ];
+  String currentInvoiceId = '';
+  String currentProductId = '';
+  final TextEditingController invoiceIdController = TextEditingController();
+  final TextEditingController productIdController = TextEditingController();
+  final TextEditingController quantityController = TextEditingController();
+
+  void updateRow(String productId) {
+    var row = rows.firstWhere((row) => row['productId'] == productId, orElse: () => {});
+    if (row.isNotEmpty) {
+      setState(() {
+        productIdController.text = row['productId'].toString();
+        quantityController.text = row['quantity'].toString();
+      });
+    }
+  }
+
+  void saveUpdatedRow() {
+    var productId = productIdController.text;
+    var row = rows.firstWhere((row) => row['productId'] == productId, orElse: () => {});
+
+    if (row.isNotEmpty) {
+      int updatedQuantity = int.tryParse(quantityController.text) ?? 0;
+      int originalQuantity = int.tryParse(row['originalQuantity'].toString()) ?? 0;
+
+      if (updatedQuantity > originalQuantity) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Quantity cannot be increased beyond the fetched amount')),
+        );
+        return;
+      }
+
+      setState(() {
+        row['quantity'] = updatedQuantity.toString();
+      });
+    }
+
+    productIdController.clear();
+    quantityController.clear();
+  }
+
+  double calculateTotal() {
+    double total = 0.0;
+    for (var row in rows) {
+      int quantity = int.tryParse(row['quantity'].toString()) ?? 0;
+      double sellingPrice = double.tryParse(row['sellingPrice'].toString()) ?? 0.0;
+      total += quantity * sellingPrice;
+    }
+    return total;
+  }
+
+  Future<void> fetchDataFromApi(String invoiceId) async {
+    final response = await http.post(
+      Uri.parse('https://your-python-api-endpoint.com/your-api-endpoint'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'invoiceId': invoiceId}),
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> responseData = json.decode(response.body);
+      setState(() {
+        rows = responseData.map((row) {
+          return {
+            'name': row['name'].toString(),
+            'productId': row['productId'].toString(),
+            'quantity': row['quantity'].toString(),
+            'sellingPrice': '40.00', // Changed selling price to 40.00
+            'originalQuantity': row['quantity'].toString(),
+          };
+        }).toList();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching data: ${response.reasonPhrase}')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    invoiceIdController.dispose();
+    productIdController.dispose();
+    quantityController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Stack(
+        child: Column(
           children: [
-            Positioned.fill(
-              child: Image.asset(
-                'assets/backgrounds/bg_image1.png',
-                fit: BoxFit.contain,
+            const SizedBox(height: 20), // Add some space
+            const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text(
+                'Return Page',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            const SizedBox(height: 20), // Add additional space if needed
+            Stack(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: kDefaultPaddin),
-                  child: Heading(
-                    text: Labels.returnLabel(),
-                    fontSize: 32.4,
-                    fontWeight: FontWeight.bold,
-                    textColor: const Color(0xFF49688D),
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/backgrounds/bg_image1.png',
+                    fit: BoxFit.contain,
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  width: MediaQuery.of(context).size.width * 1,
-                  child: const Scanner(),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: 4, // Number of text fields
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                            left: 12, right: 12, bottom: 5),
-                        child: TextFieldsWidget(
-                          filledColor: Colors.white,
-                          onChanged: (value) {
-                            // Update corresponding String variable based on index
-                            switch (index) {
-                              case 0:
-                                setState(() {
-                                  name = value;
-                                });
-                                break;
-                              case 1:
-                                setState(() {
-                                  quantity = value;
-                                });
-                                break;
-                              case 2:
-                                setState(() {
-                                  cost = value;
-                                });
-                                break;
-                              case 3:
-                                setState(() {
-                                  sellingPrice = value;
-                                });
-                                break;
-                            }
-                          },
-                          hintText: _getHintText(index),
-                          text: _getFieldText(index),
-                          borderColor: const Color(0xFF49688D),
-                          textColor: const Color(0xFF49688D),
-                          width: 220,
-                          height: 40,
-                          borderWidth: 1,
-                          borderRadius: BorderRadius.circular(100),
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                          iconColor: const Color(0xFF49688D),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: TextField(
+                        controller: invoiceIdController,
+                        decoration: const InputDecoration(
+                          labelText: 'Enter Invoice ID to fetch data',
                         ),
-                      );
-                    },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          fetchDataFromApi(invoiceIdController.text);
+                        },
+                        child: const Text('Fetch Data from API'),
+                      ),
+                    ),
+
+                  const Divider(color: Color.fromARGB(120, 0, 0, 0),
+                  thickness: 5,
                   ),
+
+                
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: Text(
+                        'Items',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: rows.length,
+                      itemBuilder: (context, index) {
+                        var row = rows[index];
+                        return ListTile(
+                          title: Text('Name: ${row['name']}'),
+                          subtitle: Text(
+                            'Product ID: ${row['productId']} - Quantity: ${row['quantity']} - Selling Price: \$${row['sellingPrice']}',
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              updateRow(row['productId']);
+                              setState(() {
+                                productIdController.text = row['productId'].toString();
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: TextField(
+                        controller: productIdController,
+                        readOnly: true, // Read-only to show Product ID from row edit
+                        decoration: const InputDecoration(
+                          labelText: 'Product ID',
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: TextField(
+                        controller: quantityController,
+                        decoration: const InputDecoration(
+                          labelText: 'Update Quantity',
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: ElevatedButton(
+                        onPressed: saveUpdatedRow,
+                        child: const Text('Save Updated Row'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        'Total Return: \$${calculateTotal().toStringAsFixed(2)}',
+                        style: const TextStyle(fontSize: 24),
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 160.0),
-                  child: LanguageButton(
-                    text: Labels.returnLabel(),
-                    onTap: () {
-                      // Use the stored values here as needed
-                      print('Name: $name');
-                      print('Quantity: $quantity');
-                      print('Cost: $cost');
-                      print('Selling Price: $sellingPrice');
-                    },
-                    borderColor: const Color(0xFF9AD0D3),
-                    textColor: const Color(0xFF49688D),
-                    width: 100,
-                    height: 50,
-                    borderWidth: 2,
-                    borderRadius: 300,
-                    textSize: 24,
-                  ),
-                )
               ],
             ),
           ],
         ),
       ),
     );
-  }
-
-  String _getFieldText(int index) {
-    switch (index) {
-      case 0:
-        return Labels.name();
-      case 1:
-        return Labels.quantity();
-      case 2:
-        return Labels.cost();
-      case 3:
-        return Labels.sellingPrice();
-      default:
-        return '';
-    }
-  }
-
-  String _getHintText(int index) {
-    switch (index) {
-      case 0:
-        return Labels.namehint();
-      case 1:
-        return Labels.quantityhint();
-      case 2:
-        return Labels.purchasehint();
-      case 3:
-        return Labels.sellingPricehint();
-      default:
-        return '';
-    }
   }
 }
