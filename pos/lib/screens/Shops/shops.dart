@@ -123,9 +123,9 @@ class _ShopsState extends State<Shops> {
                 borderRadius: 100,
                 textSize: 26,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               LanguageButton(
-                text: 'LOL1',
+                text: 'login',
                 onTap: () {
                   Navigator.push(
                     context,
@@ -142,8 +142,11 @@ class _ShopsState extends State<Shops> {
                 borderRadius: 100,
                 textSize: 26,
               ),
+
+               const SizedBox(height: 20),
+               
               LanguageButton(
-                text: 'LOL2',
+                text: 'Signup',
                 onTap: () {
                   Navigator.push(
                     context,

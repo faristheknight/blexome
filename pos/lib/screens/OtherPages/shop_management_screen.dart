@@ -9,6 +9,7 @@ import 'package:pos/screens/ScannerScreens/purchase_screen.dart';
 import 'package:pos/screens/ScannerScreens/return_screen.dart';
 import 'package:pos/screens/ScannerScreens/sales_screen.dart';
 
+
 class ShopManagementScreen extends StatefulWidget {
   const ShopManagementScreen({super.key});
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pos/CommonWidgets/heading.dart';
-import 'package:pos/constants.dart';
 import 'package:pos/labels.dart';
 import 'package:pos/screens/ScannerScreens/components/PageComponents/row_function.dart';
 // import 'package:pos/CommonWidgets/profit_and_sales_widget.dart';
@@ -168,9 +167,10 @@ class _PurchaseState extends State<Purchase> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: kDefaultPaddin),
+                  padding: const EdgeInsets.only(top: 40),
                   child: Heading(
-                    text: Labels.sales(),
+                  
+                    text: Labels.purchase(),
                     fontSize: 32.4,
                     fontWeight: FontWeight.bold,
                     textColor: const Color(0xFF49688D),
@@ -222,9 +222,7 @@ class _PurchaseState extends State<Purchase> {
                       const Row(
                         children: [
                           Expanded(child: Text('Name', style: TextStyle(fontWeight: FontWeight.bold))),
-                          Expanded(child: Text('ID', style: TextStyle(fontWeight: FontWeight.bold))),
                           Expanded(child: Text('Quantity', style: TextStyle(fontWeight: FontWeight.bold))),
-                          Expanded(child: Text('Cost', style: TextStyle(fontWeight: FontWeight.bold))),
                           Expanded(child: Text('Selling Price', style: TextStyle(fontWeight: FontWeight.bold))),
                           Icon(Icons.update, color: Colors.transparent), // Placeholder for alignment
                           Icon(Icons.delete, color: Colors.transparent), // Placeholder for alignment

@@ -1,5 +1,3 @@
-// lib/database/database_helper.dart
-
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -20,8 +18,9 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'user_database.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2, // Increment the version number
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade, // Add this line to handle upgrades
     );
   }
 
@@ -37,5 +36,25 @@ class DatabaseHelper {
       'refreshToken TEXT'
       ')',
     );
+
+    await db.execute(
+      'CREATE TABLE shops ('
+      'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+      'shop TEXT, '
+      'inuse TEXT'
+      ')',
+    );
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute(
+        'CREATE TABLE shops ('
+        'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+        'shop TEXT, '
+        'inuse TEXT'
+        ')',
+      );
+    }
   }
 }

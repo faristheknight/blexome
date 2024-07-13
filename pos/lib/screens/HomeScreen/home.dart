@@ -1,8 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:pos/constants.dart';
+import 'package:pos/database/shop.dart';
+import 'package:pos/database/shop_dao.dart';
+import 'package:pos/database/user.dart';
+import 'package:pos/database/user_dao.dart';
+import 'package:pos/labels.dart';
 import 'package:pos/screens/Shops/shops.dart';
 import 'package:pos/screens/selectLanguagesScreen/components/language_button.dart';
-import 'package:pos/labels.dart';
-import 'package:pos/constants.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MyClass extends StatefulWidget {
@@ -174,38 +181,67 @@ class _MyClassState extends State<MyClass> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    GestureDetector(
-                      onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => const HomeManagementPage(),
-                        //   ),
-                        // );
-                      },
-                      child: Container(
-                        width: 1570,
-                        height: 180,
-                        child: Column(
-                          children: [
-                            const ImageIcon(
-                              AssetImage('assets/images/home.png'),
-                              size: 100,
-                              color: kTextColor,
-                            ),
-                            Text(
-                              Labels.homeManagementComingSoon(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 17.7,
-                                color: kTextColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                   GestureDetector(
+  onTap: () async {
+    // Fetch userId from local database
+    UserDao userDao = UserDao();
+    User? user = await userDao.getUser();
+    if (user != null) {
+      String userId = user.userId;
+
+      // Call Flask API with userId
+      var url = Uri.parse('http://your_flask_api_url/get_shops');
+      var response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'userId': userId}),
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> shopsData = jsonDecode(response.body);
+
+        // Store shops data in local database
+        ShopDao shopDao = ShopDao();
+        for (var shop in shopsData) {
+          await shopDao.insertShop(Shop(
+            shop: shop['shop_name'],
+            inuse: shop['shopId'].toString(),
+          ));
+        }
+      }
+
+      // Navigate to the Shops screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Shops(),
+        ),
+      );
+    }
+  },
+  child: Container(
+    width: 129,
+    height: 150,
+    child: Column(
+      children: [
+        const ImageIcon(
+          AssetImage('assets/images/shop.png'),
+          size: 100,
+          color: kTextColor,
+        ),
+        Text(
+          Labels.shops(),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 17.7,
+            color: kTextColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    ),
+  ),
+),
                     const SizedBox(height: 40),
                     const Text(
                       "Learn how to use the app",
