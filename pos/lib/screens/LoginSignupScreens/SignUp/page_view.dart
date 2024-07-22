@@ -1,81 +1,109 @@
-import 'package:flutter/material.dart';
-import 'package:pos/screens/LoginSignupScreens/SignUp/signupfirstpage.dart';
-import 'package:pos/screens/LoginSignupScreens/SignUp/signupsecondpage.dart';
-import 'package:pos/screens/LoginSignupScreens/SignUp/signupthirdpage.dart';
+import 'dart:convert';
 
-class MultiStepForm extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
   @override
-  _MultiStepFormState createState() => _MultiStepFormState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _MultiStepFormState extends State<MultiStepForm> {
-  final PageController _pageController = PageController();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phonenumberController = TextEditingController();
+class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _countryController = TextEditingController();
+  final TextEditingController _provinceController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _cityController = TextEditingController();
-  final TextEditingController _passwordconfirmationcontroller =
-      TextEditingController();
 
-  void _nextPage() {
-    _pageController.nextPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
+  Future<void> _registerUser() async {
+    const url = 'https://blexomeapi.azurewebsites.net/signup'; // Replace with your Flask API URL
 
-  void _previousPage() {
-    _pageController.previousPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'username': _usernameController.text,
+          'ph_number': _phoneNumberController.text,
+          'country': _countryController.text,
+          'province': _provinceController.text,
+          'city': _cityController.text,
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        }),
+      );
 
-  void _printValues() {
-    print('First Name: ${_nameController.text}');
-    print('Phone Number: ${_phonenumberController.text}');
-    print('Email: ${_emailController.text}');
-    print('Password: ${_passwordController.text}');
-    print('City: ${_cityController.text}');
-    print('Confirm Password: ${_passwordconfirmationcontroller.text}');
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    _nameController.dispose();
-    _phonenumberController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _passwordconfirmationcontroller.dispose();
-    super.dispose();
+      if (response.statusCode == 201) {
+        // Handle successful registration
+        print('User registered successfully');
+      } else if (response.statusCode == 409) {
+        // Username already exists
+        print('Username already exists');
+      }else if (response.statusCode == 500) {
+        
+        print('failed to connect with ase');
+      } else {
+        // Handle other errors
+        print('Failed to register user');
+      }
+    } catch (e) {
+      print('Exception during registration: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(), // Disable swipe
-        children: [
-          SignUpFirstPage(
-              nameController: _nameController,
-              phonenumberController: _phonenumberController,
-              onNext: _nextPage),
-          SignUpSecondPage(
-            cityController: _cityController,
-            onNext: _nextPage,
-            onBack: _previousPage,
+      appBar: AppBar(
+        title: Text('Sign Up'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(labelText: 'Username'),
+              ),
+              TextField(
+                controller: _phoneNumberController,
+                decoration: InputDecoration(labelText: 'Phone Number'),
+              ),
+              TextField(
+                controller: _countryController,
+                decoration: InputDecoration(labelText: 'Country'),
+              ),
+              TextField(
+                controller: _provinceController,
+                decoration: InputDecoration(labelText: 'Province'),
+              ),
+              TextField(
+                controller: _cityController,
+                decoration: InputDecoration(labelText: 'City'),
+              ),
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+              ),
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _registerUser,
+                child: Text('Register'),
+              ),
+            ],
           ),
-          SignUpThirdPage(
-            emailController: _emailController,
-            passwordController: _passwordController,
-            passwordconfirmationController: _passwordconfirmationcontroller,
-            onNext: _printValues,
-            onBack: _previousPage,
-          ),
-        ],
+        ),
       ),
     );
   }

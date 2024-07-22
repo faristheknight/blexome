@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pos/CommonWidgets/blexome.dart';
 import 'package:pos/CommonWidgets/heading.dart';
 import 'package:pos/constants.dart';
+import 'package:pos/labels.dart';
 import 'package:pos/screens/LoginSignupScreens/components/text_field_widget.dart';
 import 'package:pos/screens/selectLanguagesScreen/components/language_button.dart';
-import 'package:pos/labels.dart';
 
 class SignUpSecondPage extends StatelessWidget {
   final TextEditingController cityController;

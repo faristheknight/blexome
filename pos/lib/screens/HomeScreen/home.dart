@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 import 'package:pos/constants.dart';
 import 'package:pos/database/shop.dart';
 import 'package:pos/database/shop_dao.dart';
@@ -10,6 +11,7 @@ import 'package:pos/database/user_dao.dart';
 import 'package:pos/labels.dart';
 import 'package:pos/screens/Shops/shops.dart';
 import 'package:pos/screens/selectLanguagesScreen/components/language_button.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MyClass extends StatefulWidget {
@@ -23,6 +25,38 @@ class _MyClassState extends State<MyClass> {
   bool _showLanguageButtons = false;
   late YoutubePlayerController _controller;
   bool _isMuted = true; // Variable to track mute state
+
+
+   Future<Database> _getDatabase() async {
+    String path = join(await getDatabasesPath(), 'user_database.db');
+    return openDatabase(path);
+  }
+
+  Future<void> _insertOrUpdateUser() async {
+    final Database db = await _getDatabase();
+
+    // Check if there's an existing user
+    List<Map<String, dynamic>> maps = await db.query('user');
+
+    // If there is an existing user, delete it
+    if (maps.isNotEmpty) {
+      await db.delete('user');
+    }
+
+    // Insert new user
+    await db.insert(
+      'user',
+      {
+        'userId': '2415',
+        'deviceId': 'some_device_id', // Replace with actual device ID if needed
+        'sha': 'some_sha', // Replace with actual SHA if needed
+        'token': 'some_token', // Replace with actual token if needed
+        'expiry': 'some_expiry', // Replace with actual expiry if needed
+        'refreshToken': 'some_refresh_token', // Replace with actual refresh token if needed
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
 
   @override
   void initState() {
@@ -181,6 +215,7 @@ class _MyClassState extends State<MyClass> {
                       ),
                     ),
                     const SizedBox(height: 10),
+
                    GestureDetector(
   onTap: () async {
     // Fetch userId from local database

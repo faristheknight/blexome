@@ -368,4 +368,21 @@ class Labels {
   static String passwordsDoNotMatch() {
     return "Passwords do not Match";
   }
+
+    static String emailIsRequired() {
+    return "Email is required";
+  }
+
+  static String passwordIsRequired() {
+    return "Password is required";
+  }
+
+  static String passwordLengthWarning() {
+    return "Minimmum 8 Characters";
+  }
+
+  static String passwordMismatch() {
+    return "Password does not matches";
+  }
+
 }

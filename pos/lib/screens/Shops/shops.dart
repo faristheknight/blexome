@@ -151,7 +151,7 @@ class _ShopsState extends State<Shops> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MultiStepForm(),
+                      builder: (context) => SignUpPage(),
                     ),
                   );
                 },
