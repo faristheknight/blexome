@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pos/constants.dart';
-import 'package:pos/labels.dart';
-// import 'package:pos/screens/shop_product.dart';
-// import 'package:pos/screens/shop_reports.dart';
-// import 'package:pos/screens/shop_sales.dart';
-import 'package:pos/CommonWidgets/button.dart';
-import 'package:pos/screens/Products/product_details.dart';
-import 'package:pos/screens/Products/products.dart';
+
+import '../../CommonWidgets/button.dart';
+import '../../constants.dart';
+import '../../labels.dart';
+import '../Products/product_details.dart';
+import '../Products/products.dart';
+
 
 class ProductManagementScreen extends StatefulWidget {
   const ProductManagementScreen({super.key});

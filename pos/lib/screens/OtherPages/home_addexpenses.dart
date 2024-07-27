@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../constants.dart';
+import '../Products/scanner_textfields_widget.dart';
 // import 'package:pos/labels.dart';
-import 'package:pos/constants.dart';
-// import 'package:pos/screens/ProfitAndSalesScreen/components/profit_and_sales_widget.dart';
-import 'package:pos/screens/ScannerScreens/components/ScannerWidgets/scanner_textfields_widget.dart';
 
 class Addexpenses extends StatefulWidget {
   const Addexpenses({super.key});

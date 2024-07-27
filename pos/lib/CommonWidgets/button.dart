@@ -9,7 +9,7 @@ class LanguageButton extends StatelessWidget {
   final double height;
   final double borderWidth;
   final double borderRadius;
-  final double textSize;
+  final double? textSize;
 
   const LanguageButton({
     super.key,
@@ -21,7 +21,7 @@ class LanguageButton extends StatelessWidget {
     required this.height,
     required this.borderWidth,
     required this.borderRadius,
-    required this.textSize,
+     this.textSize,
   });
 
   @override
@@ -46,7 +46,7 @@ class LanguageButton extends StatelessWidget {
               text,
               style: TextStyle(
                 color: textColor,
-                fontSize: textSize,
+                fontSize: textSize??14,
                 fontWeight: FontWeight.normal,
               ),
             ),

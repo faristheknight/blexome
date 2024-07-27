@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pos/constants.dart';
-import 'package:pos/labels.dart';
+
+import '../../constants.dart';
+import '../../labels.dart';
 
 class Products extends StatefulWidget {
   const Products({super.key});

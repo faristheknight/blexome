@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pos/labels.dart';
-import 'package:pos/screens/ProfitAndSalesScreen/components/profit_and_sales_widget.dart';
-import 'package:pos/CommonWidgets/heading.dart';
+
+import '../../CommonWidgets/heading.dart';
+import '../../CommonWidgets/profit_and_sales_widget.dart';
+import '../../labels.dart';
+
 
 class ProfitAndSales extends StatelessWidget {
   const ProfitAndSales({super.key});

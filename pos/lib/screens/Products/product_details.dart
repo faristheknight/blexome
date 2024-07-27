@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:pos/labels.dart';
-import 'package:pos/CommonWidgets/heading.dart';
-import 'package:pos/constants.dart';
-import 'package:pos/screens/ScannerScreens/components/Scanner/scanner.dart';
-import 'package:pos/screens/ScannerScreens/components/ScannerWidgets/scanner_textfields_widget.dart';
-import 'package:pos/CommonWidgets/button.dart';
+import 'package:provider/provider.dart';
+
+import '../../CommonWidgets/button.dart';
+import '../../CommonWidgets/heading.dart';
+import '../../constants.dart';
+import '../../labels.dart';
+import '../../providers/barcode_provider.dart';
+import '../ScannerScreens/components/Scanner/scanner.dart';
+import '../ScannerScreens/components/ScannerWidgets/scanner_textfields_widget.dart';
 
 class ProductDetails extends StatefulWidget {
   const ProductDetails({super.key});
@@ -46,17 +49,23 @@ class _ProductDetailsState extends State<ProductDetails> {
                     textColor: const Color(0xFF49688D),
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  width: MediaQuery.of(context).size.width * 1,
+                const SizedBox(height: 20),
+                Container(
+                  height: 420,
+                  width: MediaQuery.of(context).size.width,
                   child: const Scanner(),
                 ),
-                const SizedBox(
-                  height: 20,
+                const SizedBox(height: 10),
+                Consumer<BarcodeProvider>(
+                  builder: (context, barcodeProvider, child) {
+                    return Text(
+                      barcodeProvider.barcode != null
+                          ? 'Barcode: ${barcodeProvider.barcode}'
+                          : 'No barcode scanned',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
+                    );
+                  },
                 ),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListView.builder(

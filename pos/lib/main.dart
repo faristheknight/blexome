@@ -1,8 +1,15 @@
+import 'package:barcodeproject/providers/barcode_provider.dart';
+import 'package:barcodeproject/screens/HomeScreen/home.dart';
 import 'package:flutter/material.dart';
-import 'package:pos/screens/HomeScreen/home.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const PosApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => BarcodeProvider(),
+      child: PosApp(),
+    ),
+  );
 }
 
 class PosApp extends StatelessWidget {
@@ -19,13 +26,13 @@ class PosApp extends StatelessWidget {
         '/': (context) => const HomePage(),
         '/myclass': (context) => const MyClass(),
       },
- 
+
       builder: (context, child){
         return MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)), child:  child!,
         );
       },
-     
-      
+
+
     );
   }
 }
@@ -49,7 +56,7 @@ class HomePage extends StatelessWidget {
       body: const Center(
         child: MyClass(), // Displaying MyClass instead of buttons
       ),
-      
+
     );
   }
 }

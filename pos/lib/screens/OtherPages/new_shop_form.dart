@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pos/constants.dart';
-import 'package:pos/labels.dart';
+
+import '../../constants.dart';
+import '../../labels.dart';
+
 
 class Newformshop extends StatefulWidget {
   const Newformshop({super.key});

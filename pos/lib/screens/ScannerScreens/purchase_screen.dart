@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:pos/CommonWidgets/heading.dart';
-import 'package:pos/labels.dart';
-import 'package:pos/screens/ScannerScreens/components/PageComponents/row_function.dart';
-// import 'package:pos/CommonWidgets/profit_and_sales_widget.dart';
-import 'package:pos/screens/ScannerScreens/components/Scanner/scanner.dart';
+import 'package:provider/provider.dart';
+
+import '../../CommonWidgets/heading.dart';
+import '../../labels.dart';
+import '../../providers/barcode_provider.dart';
+import 'components/PageComponents/row_function.dart';
+import 'components/Scanner/scanner.dart';
+
 
 class Purchase extends StatefulWidget {
   const Purchase({Key? key}) : super(key: key);
@@ -178,11 +181,21 @@ class _PurchaseState extends State<Purchase> {
                 ),
                 const SizedBox(height: 20),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
+                  height: 420,
                   width: MediaQuery.of(context).size.width,
                   child: const Scanner(),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
+                Consumer<BarcodeProvider>(
+                  builder: (context, barcodeProvider, child) {
+                    return Text(
+                      barcodeProvider.barcode != null
+                          ? 'Barcode: ${barcodeProvider.barcode}'
+                          : 'No barcode scanned',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(

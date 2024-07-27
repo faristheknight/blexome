@@ -1,14 +1,14 @@
+import 'package:barcodeproject/screens/OtherPages/product_management_screen.dart';
+import 'package:barcodeproject/screens/OtherPages/shop_reports.dart';
 import 'package:flutter/material.dart';
-// import 'package:pos/screens/shop_sales.dart';
-import 'package:pos/CommonWidgets/button.dart';
-import 'package:pos/Screens/OtherPages/product_management_screen.dart';
-import 'package:pos/Screens/OtherPages/shop_reports.dart';
-import 'package:pos/constants.dart';
-import 'package:pos/labels.dart';
-import 'package:pos/screens/ScannerScreens/purchase_screen.dart';
-import 'package:pos/screens/ScannerScreens/return_screen.dart';
-import 'package:pos/screens/ScannerScreens/sales_screen.dart';
 
+import '../../CommonWidgets/button.dart';
+import '../../constants.dart';
+import '../../labels.dart';
+import '../ScannerScreens/purchase_screen.dart';
+import '../ScannerScreens/return_screen.dart';
+import '../ScannerScreens/sales_screen.dart';
+// import 'package:pos/screens/shop_sales.dart';
 
 class ShopManagementScreen extends StatefulWidget {
   const ShopManagementScreen({super.key});

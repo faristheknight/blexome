@@ -4,11 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../providers/barcode_provider.dart';
 import '../ScannerWidgets/scanner_button_widgets.dart';
 
 class Scanner extends StatefulWidget {
-  const Scanner({super.key}) ;
+  const Scanner({super.key});
 
   @override
   State<Scanner> createState() => _ScannerState();
@@ -33,9 +35,16 @@ class _ScannerState extends State<Scanner> with WidgetsBindingObserver {
   Future<void> _initializeScanner() async {
     final status = await Permission.camera.request();
     if (status.isGranted) {
-      await controller.start();
-      if (kDebugMode) {
-        print('Camera started successfully');
+      if (!context.read<BarcodeProvider>().isScannerStarted) {
+        await controller.start();
+        context.read<BarcodeProvider>().setScannerStarted(true);
+        if (kDebugMode) {
+          print('Camera started successfully');
+        }
+      } else {
+        if (kDebugMode) {
+          print('Camera already started');
+        }
       }
     } else {
       if (kDebugMode) {
@@ -52,9 +61,20 @@ class _ScannerState extends State<Scanner> with WidgetsBindingObserver {
         if (kDebugMode) {
           print('Barcode found! $code');
         }
-        // Add your code handling logic here
+        // Use the provider to store the barcode
+        context.read<BarcodeProvider>().setBarcode(code);
+        // No need to stop the camera, it will remain active
       }
     }
+  }
+
+  void _disposeAndReinitializeScanner() async {
+    await controller.stop();
+    context.read<BarcodeProvider>().setScannerStarted(false);
+    _subscription?.cancel();
+    await _initializeScanner();
+    WidgetsBinding.instance.addObserver(this);
+    _subscription = controller.barcodes.listen(_handleBarcode);
   }
 
   @override
@@ -94,6 +114,10 @@ class _ScannerState extends State<Scanner> with WidgetsBindingObserver {
                 ToggleFlashlightButton(controller: controller),
                 StartStopMobileScannerButton(controller: controller),
                 SwitchCameraButton(controller: controller),
+                ElevatedButton(
+                  onPressed: _disposeAndReinitializeScanner,
+                  child: const Text('Rescan'),
+                ),
               ],
             ),
           ),
@@ -123,7 +147,7 @@ class _ScannerState extends State<Scanner> with WidgetsBindingObserver {
               },
             ),
           ),
-         const Text(
+          const Text(
             '100%',
             overflow: TextOverflow.fade,
             style: TextStyle(color: Colors.white),
@@ -136,7 +160,7 @@ class _ScannerState extends State<Scanner> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (!controller.value.isInitialized) {
+    if (!context.read<BarcodeProvider>().isScannerStarted) {
       return;
     }
     switch (state) {
@@ -144,12 +168,15 @@ class _ScannerState extends State<Scanner> with WidgetsBindingObserver {
       case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
         controller.stop();
+        context.read<BarcodeProvider>().setScannerStarted(false);
         break;
       case AppLifecycleState.resumed:
         controller.start();
+        context.read<BarcodeProvider>().setScannerStarted(true);
         break;
       case AppLifecycleState.inactive:
         controller.stop();
+        context.read<BarcodeProvider>().setScannerStarted(false);
         break;
     }
   }
@@ -159,6 +186,7 @@ class _ScannerState extends State<Scanner> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     _subscription?.cancel();
     controller.dispose();
+    print('dispose');
     super.dispose();
   }
 }

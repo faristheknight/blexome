@@ -34,7 +34,7 @@ class TextFieldsWidget extends StatelessWidget {
     required this.fontSize,
     required this.fontWeight,
     required this.iconColor,
-    required this.textInputType,
+     this.textInputType=TextInputType.text,
     this.icon,
     this.controller, // Added controller parameter
 

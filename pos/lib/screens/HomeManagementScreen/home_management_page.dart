@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pos/Screens/OtherPages/home_expenses.dart';
-import 'package:pos/Screens/OtherPages/home_income.dart';
-import 'package:pos/constants.dart';
-// import 'package:pos/labels.dart';
-import 'package:pos/CommonWidgets/button.dart';
+
+import '../../CommonWidgets/button.dart';
+import '../../constants.dart';
+import '../OtherPages/home_expenses.dart';
+import '../OtherPages/home_income.dart';
+
 
 class HomeManagementPage extends StatefulWidget {
   const HomeManagementPage({super.key});

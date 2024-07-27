@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pos/Screens/OtherPages/home_addexpenses.dart';
-import 'package:pos/constants.dart';
-// import 'package:pos/labels.dart';
-import 'package:pos/CommonWidgets/button.dart';
+
+import '../../CommonWidgets/button.dart';
+import '../../constants.dart';
+import 'home_addexpenses.dart';
+
 
 class Homeexpenses extends StatefulWidget {
   const Homeexpenses({super.key});

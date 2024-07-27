@@ -3,16 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
-import 'package:pos/constants.dart';
-import 'package:pos/database/shop.dart';
-import 'package:pos/database/shop_dao.dart';
-import 'package:pos/database/user.dart';
-import 'package:pos/database/user_dao.dart';
-import 'package:pos/labels.dart';
-import 'package:pos/screens/Shops/shops.dart';
-import 'package:pos/screens/selectLanguagesScreen/components/language_button.dart';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
+import '../../CommonWidgets/button.dart';
+import '../../constants.dart';
+import '../../database/shop.dart';
+import '../../database/shop_dao.dart';
+import '../../database/user.dart';
+import '../../database/user_dao.dart';
+import '../../labels.dart';
+import '../Shops/shops.dart';
 
 class MyClass extends StatefulWidget {
   const MyClass({super.key});

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pos/constants.dart';
-import 'package:pos/labels.dart';
-import 'package:pos/screens/selectLanguagesScreen/components/language_button.dart';
+
+import '../../CommonWidgets/button.dart';
+import '../../constants.dart';
+import '../../labels.dart';
 
 class SelectLanguagesScreen extends StatelessWidget {
   const SelectLanguagesScreen({super.key});

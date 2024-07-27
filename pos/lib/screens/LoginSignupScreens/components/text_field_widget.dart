@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pos/constants.dart';
+
+import '../../../constants.dart';
 
 class LoginTextFieldsWidget extends StatelessWidget {
   final String text;

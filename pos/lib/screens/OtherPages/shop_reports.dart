@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pos/constants.dart';
-import 'package:pos/labels.dart';
-// import 'package:pos/screens/ProfitAndSalesScreen/components/profit_and_sales_widget.dart';
-import 'package:pos/screens/ProfitAndSalesScreen/profit_and_sales.dart';
-// import 'package:pos/screens/ScannerScreens/components/scanner_textfields_widget.dart';
-import 'package:pos/CommonWidgets/button.dart';
-import 'package:pos/screens/ScannerScreens/sales_screen.dart';
+
+import '../../CommonWidgets/button.dart';
+import '../../constants.dart';
+import '../../labels.dart';
+import '../ProfitAndSalesScreen/profit_and_sales.dart';
+import '../ScannerScreens/sales_screen.dart';
 
 class Shopreports extends StatefulWidget {
   const Shopreports({super.key});
